@@ -84,7 +84,7 @@ import argparse
 import yaml
 import torch
 import deepspeed
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import Glm4vModel, AutoTokenizer
 
 from train_functions import configure_optimizer, train_step
 import datasets
@@ -526,8 +526,8 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # 加载模型和分词器
-    transformer_model = AutoModelForCausalLM.from_pretrained(config['Llama']['model_id'],
-                                                            torch_dtype=dtype, device_map=DeviceID,low_cpu_mem_usage=True)
+    transformer_model = Glm4vModel.from_pretrained(config['Llama']['model_id'], torch_dtype=torch.bfloat16, device_map=DeviceID)
+
     tokenizer = AutoTokenizer.from_pretrained(config['Llama']['model_id'])
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
