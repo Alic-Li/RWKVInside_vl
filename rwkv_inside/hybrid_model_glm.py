@@ -473,7 +473,7 @@ class HybridModel(nn.Module):
 
 
 
-                llama_layer = transformer_model.model.layers[layer_idx]
+                llama_layer = transformer_model.language_model.layers[layer_idx]
                 attn_wrapper = AttentionWrapper(student_attn,layer_idx,rwkv_args)
                 llama_layer.self_attn = attn_wrapper
                 gc.collect()
@@ -497,6 +497,7 @@ class HybridModel(nn.Module):
     def forward(
         self,
         input_ids,
+        image_grid_thw,
         attention_mask,
         **kwargs,
     ):
@@ -505,7 +506,7 @@ class HybridModel(nn.Module):
                 llama_layer = self.model.model.layers[layer_idx]
                 attn_wrapper = llama_layer.self_attn
                 attn_wrapper.attention_mask = attention_mask
-        ret = self.model(input_ids, **kwargs)
+        ret = self.model(input_ids, image_grid_thw, **kwargs)
         return ret
     
     def load_check_point(self, path):
