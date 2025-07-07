@@ -1,0 +1,16 @@
+RWKV:
+  layers: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+  grad_cp: 1
+
+Llama:
+  model_id: /home/client/Projects/Borea-Phi-3.5-mini-Instruct-Jp/
+is_llama_ffn: True
+kl_weight: 1
+ce_weight: 0
+model_file: Borea-Phi-3.5-mini-Instruct-Jp
+init_with_llama: True
+is_rwkv_att_only: True
+teach_mode:
+  is_client: False
+  is_hidden_align: False
+is_all_labels_kl: True

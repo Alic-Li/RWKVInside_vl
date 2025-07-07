@@ -1,0 +1,697 @@
+for qwen 0.5B
+sh train.sh -c configs/qwen_0.5b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 6 -r "/home/client/Projects/RWKVInside/rawdata" -o "/home/client/Projects/RWKVInside/output-qwen0b5-stage1"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.2 -R v7 -s 1 -G 2 -P 'qwen0b5-stage1-rwkv7'
+
+sh train.sh -c configs/qwen_0.5b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -r "/home/client/Projects/RWKVInside/rawdata" -o "/home/client/Projects/RWKVInside/output-qwen0b5-stage1"   -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.2 -R v7 -s 2 -k "out2" -G 2
+
+
+sh train.sh -c configs/qwen_0.5b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -r "/home/client/Projects/RWKVInside/rawdata" -o "out2"   -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.2 -R v7 -s 2 -k "/home/client/Projects/RWKVInside/output-qwen0b5-stage1" -G 2
+
+
+
+
+sh train.sh -c configs/llm-jp-1.8b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 4 -r "/home/client/Projects/RWKVInside/rawdata_llama" -o "/home/client/Projects/RWKVInside/output-llmjp1b8-2"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -P 'llm-jp-1b8-rwkv7'
+
+sh train.sh -c configs/llm-jp-1.8b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -r "/home/client/Projects/RWKVInside/rawdata_llama" -o "/home/client/Projects/RWKVInside/output-llmjp1b8"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -k 'out2' -z 1 -G 2
+
+
+
+stage 1
+sh train.sh -c configs/llm-jp-7.2b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 1 -a 4 -r "/home/client/Projects/RWKVInside/rawdata_llama" -o "/home/client/Projects/RWKVInside/output-llmjp7b2"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -P 'llm-jp-7b2-rwkv7'
+
+stage 2
+sh train.sh -c configs/llm-jp-7.2b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 1 -a 4 -r "/home/client/Projects/RWKVInside/rawdata_llama" -o "/home/client/Projects/RWKVInside/output-llmjp7b2-stage2" -k "/home/client/Projects/RWKVInside/7b2-stage1/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -P 'llm-jp-7b2-rwkv7-stage2'
+
+
+
+
+borea phi3.5
+
+stage 1
+sh train.sh -c configs/phi3.5-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 3 -a 4 -r "/home/client/Projects/RWKVInside/rawdata" -o "/home/client/Projects/RWKVInside/output-phi3.5-stage1"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'output-phi3.5-stage1-rwkv7'
+stage 2
+sh train.sh -c configs/phi3.5-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -a 4 -r "/home/client/Projects/RWKVInside/rawdata" -o "/home/client/Projects/RWKVInside/output-phi3.5-stage2" -k "/home/client/Projects/RWKVInside/output-phi3.5-stage1/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'output-phi3.5-stage2-rwkv7'
+
+
+
+phi-4-mini-instruct
+
+stage 1
+sh train.sh -c configs/phi4-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -a 4 -r "/home/client/Projects/RWKVInside/new_dataset_format" -o "/home/client/Projects/RWKVInside/output-phi4-stage1"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'output-phi4-stage1-rwkv7'
+stage 2
+sh train.sh -c configs/phi4-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 1 -a 8 -r "/home/client/Projects/RWKVInside/new_dataset_format" -o "/home/client/Projects/RWKVInside/output-phi4-stage2-2" -k "/home/client/Projects/RWKVInside/output-phi4-stage1/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'output-phi4-stage2-rwkv7'
+
+python ./train_scripts/convert_pt.py --model_path "/home/client/Projects/RWKVInside/output-phi4-stage2" --output_path "testhf" --original_model_path "/home/client/Projects/Phi-4-mini-instruct"
+
+
+python ./test/convert_2_hf.py --config_file "/home/client/Projects/RWKVInside/configs/phi4-mini.yaml" --ckpt_file "/home/client/Projects/RWKVInside/output-phi4-stage2" --output_config_dir "testhf"
+
+
+
+
+phi-4-mini instruct new approch(Attn loss stage1)
+stage 1
+sh train.sh -c configs/phi4-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 2 -a 4 -r "/home/client/Projects/RWKVInside/myfolder/new_dataset_format" -o "/home/client/Projects/RWKVInside/myfolder/phi4-stage1"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'output-phi4-stage1-rwkv7'
+
+stage 2
+sh train.sh -c configs/phi4-mini.yaml -l 0.0001 -f 0.00001 -m 2048 -b 1 -a 8 -r "/home/client/Projects/RWKVInside/myfolder/new_dataset_format" -o "/home/client/Projects/RWKVInside/myfolder/phi4-stage2" -k "/home/client/Projects/RWKVInside/myfolder/phi4-stage1/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'new_phi-4-stage2'
+
+
+merge
+python train_scripts/save_checkpoint.py myfolder/phi4-stage1/epoch_0_step_9200 myfolder/phi4-stage1
+
+python train_scripts/save_checkpoint.py myfolder/phi4-stage2/epoch_0_step_2200 myfolder/phi4-stage2
+
+
+phi-4 instruct new approch(Attn loss stage1)
+stage 1(0->L20)
+sh train_stage1.sh -c configs/phi4.yaml -l 0.0002 -f 0.00001 -m 2048 -b 1 -a 4 -r "/home/client/Projects/RWKVInside/myfolder/new_dataset_format" -o "/home/client/Projects/RWKVInside/myfolder/phi-4/stage1-L0toL20"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'output-phi4-stage1-rwkv7-L0toL20'
+
+
+runpod setting
+sh train_stage1.sh -c configs/phi4.yaml -l 0.0001 -f 0.00001 -m 2560 -b 6 -a 4 -r "/workspace/r2" -o "/workspace/output/phi-4/stage1"  -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'phi-4-stage1-rwkv7'
+
+
+stage1p
+sh train_stage1.sh -c configs/phi4.yaml -l 0.0001 -f 0.00001 -m 2560 -b 6 -a 4 -r "/workspace/r2" -o "/workspace/output/phi-4/stage-1p" -k "/workspace/output/phi-4/stage1/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'phi-4-stage1-rwkv7'
+
+sh train_stage1.sh -c configs/phi4.yaml -l 0.0001 -f 0.00001 -m 2560 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/phi-4/stage-1p" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'phi-4-stage1-rwkv7'
+
+Convert Stage1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/phi-4/stage-1p/epoch_0_step_7200 /workspace/output/phi-4/stage-1p/pytorch_model.bin
+
+
+python ./train_scripts/ConvertToRWKVInfer.py 
+
+Stage2 on runpod mi300x
+sh train.sh -c configs/phi4.yaml -l 0.00001 -f 0.000001 -m 2048 -b 12 -a 1 -r "/workspace/r2" -o "/workspace/output/phi-4/stage2" -k "/workspace/output/phi-4/stage-1p/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'phi-4-stage2-rwkv7' -N 1
+
+
+
+
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.0001 -f 0.00001 -m 2048 -b 3 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1p" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+Convert Stage1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage1/epoch_0_step_9000 /workspace/output/mistral3small/stage1/pytorch_model.bin
+
+
+#Stage2 Mistral
+sh train.sh -c configs/mistral3small.yaml -l 0.000005 -f 0.000001 -m 6144 -b 4 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2' -N 1
+
+Convert Stage2 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_400 /workspace/output/mistral3small/stage2/pytorch_model2.bin
+Convert Stage2 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_1200 /workspace/output/mistral3small/stage2/pytorch_model2.bin
+
+#Stage2-1 Mistral HighLR
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.000001 -m 4096 -b 3 -a 6 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+
+
+Convert Stage1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage1p/epoch_0_step_3000 /workspace/output/mistral3small/stage1p/pytorch_model.bin
+
+
+
+#Stage2-1p Mistral HighLR
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.000001 -m 4096 -b 3 -a 6 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.000001 -m 4096 -b 3 -a 6 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+
+
+
+
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.000001 -f 0.00001 -m 2048 -b 3 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1p" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+
+#Stage2-1 Temp4
+sh train.sh -c configs/mistral3small.yaml -l 0.000005 -f 0.000001 -m 4096 -b 3 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_200 /workspace/output/mistral3small/stage2/pytorch_model.bin
+
+#Stage2-1 Temp3
+sh train.sh -c configs/mistral3small.yaml -l 0.000003 -f 0.000001 -m 4096 -b 3 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p1" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p1/epoch_0_step_1800 /workspace/output/mistral3small/stage2p1/pytorch_model.bin
+
+
+#Stage2-1 Temp2
+sh train.sh -c configs/mistral3small.yaml -l 0.000003 -f 0.000001 -m 4096 -b 3 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p2" -k "/workspace/output/mistral3small/stage2p1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p2/epoch_0_step_2000 /workspace/output/mistral3small/stage2p2/pytorch_model.bin
+
+
+#Stage2-1 Temp1
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.000001 -m 4096 -b 3 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p3" -k "/workspace/output/mistral3small/stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+
+
+
+
+python ./train_scripts/ConvertToRWKVInfer.py 
+
+##########################
+
+#Stage1 Comeback!
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.0001 -f 0.00001 -m 2048 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+Convert Stage1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage1/epoch_0_step_2000 /workspace/output/mistral3small/stage1/pytorch_model.bin
+
+#Stage2-0 Temp1.0
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.000001 -m 4096 -b 3 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-1' -N 1
+
+Convert Stage2p0 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_600 /workspace/output/mistral3small/stage2/pytorch_model.bin
+
+#Stage2-1 Temp1.0
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p1" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2' -N 1
+
+Convert Stage2p1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p1/epoch_0_step_1800 /workspace/output/mistral3small/stage2p1/pytorch_model.bin
+
+
+#Stage2-2 Temp2.0
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p2" -k "/workspace/output/mistral3small/stage2p1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-3' -N 1
+
+
+#Stage1 Comeback!
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.0001 -f 0.00001 -m 512 -b 60 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+Convert Stage1 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage1/epoch_0_step_1000 /workspace/output/mistral3small/stage1/pytorch_model.bin
+
+#Stage2-1 Temp4.0
+sh train.sh -c configs/mistral3small.yaml -l 0.000005 -f 0.000001 -m 2048 -b 7 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-temp-4.0' -N 1
+
+
+Convert Stage2 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_600 /workspace/output/mistral3small/stage2/pytorch_model.bin
+
+#Stage2-1 Temp3.0
+sh train.sh -c configs/mistral3small.yaml -l 0.000005 -f 0.000001 -m 2048 -b 7 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-temp-3.0' -N 1
+
+
+
+
+
+
+#Stage2-1 Temp2.0
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 2048 -b 8 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p1" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-tanomuyo' -N 1
+Convert Stage2 to bin
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p1/epoch_0_step_400 /workspace/output/mistral3small/stage2p1/pytorch_model.bin
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 1024 -b 16 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p1" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-onegai' -N 1
+
+
+#Tryagain Stage1
+
+#Stage1 Comeback!
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.0001 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage1p/epoch_0_step_2200 /workspace/output/mistral3small/stage1p/pytorch_model.bin
+
+
+#Stage1 Comeback!
+
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.00005 -f 0.00001 -m 2048 -b 7 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1p" -k "/workspace/output/mistral3small/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'mistral-small-stage1' -N 1
+
+
+#Stage2-1 Temp3.0
+sh train.sh -c configs/mistral3small.yaml -l 0.000006 -f 0.00001 -m 2048 -b 8 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-phoenix' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_200 /workspace/output/mistral3small/stage2/pytorch_model.bin
+
+#Stage2-1 Temp3.0
+sh train.sh -c configs/mistral3small.yaml -l 0.00003 -f 0.00003 -m 2048 -b 8 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'mistral-small-stage2-2-phoenix-2' -N 1
+
+
+#KIWO TORINAOSHITE JIBUNNWO SHINJIRU
+
+sh train_stage1.sh -c configs/mistral3small.yaml -l 0.0001 -f 0.00001 -m 512 -b 27 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage1pmose" -k "/workspace/output/mistral3small/stage1pmose/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'mistral-neko-stage1-final' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2/epoch_0_step_2200 /workspace/output/mistral3small/stage2/pytorch_model.bin
+
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00003 -f 0.00003 -m 768 -b 28 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2" -k "/workspace/output/mistral3small/stage1pmose/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-2' -N 1
+
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 768 -b 28 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p" -k "/workspace/output/mistral3small/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-3' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p/epoch_0_step_1000 /workspace/output/mistral3small/stage2p/pytorch_model.bin
+
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00001 -f 0.00001 -m 1536 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p2" -k "/workspace/output/mistral3small/stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-4' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p2/epoch_0_step_400 /workspace/output/mistral3small/stage2p2/pytorch_model.bin
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00002 -f 0.00002 -m 768 -b 28 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p2" -k "/workspace/output/mistral3small/stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-4' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p2/epoch_0_step_1200 /workspace/output/mistral3small/stage2p2/pytorch_model.bin
+
+
+#finally Stage2.5 , Stage3!!!!!!!!!!!!!!!
+sh train.sh -c configs/mistral3small.yaml -l 0.00002 -f 0.00001 -m 768 -b 24 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage3" -k "/workspace/output/mistral3small/stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-4' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage3/epoch_0_step_200 /workspace/output/mistral3small/stage3/pytorch_model.bin
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00002 -f 0.00001 -m 768 -b 28 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage3" -k "/workspace/output/mistral3small/stage3/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-4' -N 1
+
+
+sh train.sh -c configs/mistral3small.yaml -l 0.00003 -f 0.00003 -m 768 -b 28 -a 1 -r "/workspace/r2" -o "/workspace/output/mistral3small/stage2p3" -k "/workspace/output/mistral3small/stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'mistral-small-stage2-phoenix-5' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/mistral3small/stage2p3/epoch_0_step_400 /workspace/output/mistral3small/stage2p3/pytorch_model.bin
+
+
+
+#Qwen 14B
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage1'
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage1p/epoch_0_step_600 /workspace/output/Qwen2.5-14B-Instruct/stage1p/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 8 -a 1 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage1p" -k "/workspace/output/Qwen2.5-14B-Instruct/stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage1-final' -N 1
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.00003 -f 0.00003 -m 2048 -b 12 -a 1 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2" -k "/workspace/output/Qwen2.5-14B-Instruct/stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2' -N 1
+
+
+#Reka 3 Flash
+sh train_stage1.sh -c configs/reka_flash3.yaml -l 0.0001 -f 0.00001 -m 2048 -b 7 -a 2 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage1/epoch_0_step_2800 /workspace/output/rekaflash3/stage1/pytorch_model.bin
+
+
+sh train.sh -c configs/reka_flash3.yaml -l 0.00003 -f 0.00003 -m 2048 -b 7 -a 2 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2" -k "/workspace/output/rekaflash3/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage2/epoch_0_step_400 /workspace/output/rekaflash3/stage2/pytorch_model.bin
+
+
+sh train.sh -c configs/reka_flash3.yaml -l 0.00001 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p" -k "/workspace/output/rekaflash3/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-final' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage2p/epoch_0_step_700 /workspace/output/rekaflash3/stage2p/pytorch_model.bin
+
+
+sh train.sh -c configs/reka_flash3.yaml -l 0.00001 -f 0.00001 -m 6144 -b 2 -a 1 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p" -k "/workspace/output/rekaflash3/stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-final' -N 1
+
+#for dual mi300
+sh train.sh -c configs/reka_flash3.yaml -l 0.00001 -f 0.00001 -m 4096 -b 4 -a 1 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p" -k "/workspace/output/rekaflash3/stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-longctx' -N 1
+
+#for dual mi300
+sh train.sh -c configs/reka_flash3.yaml -l 0.00001 -f 0.00001 -m 4096 -b 4 -a 1 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p" -k "/workspace/output/rekaflash3/stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-longctx' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage2p3/epoch_0_step_200 /workspace/output/rekaflash3/stage2p3/pytorch_model.bin
+
+
+#single mi300x
+sh train.sh -c configs/reka_flash3.yaml -l 0.000005 -f 0.000005 -m 4096 -b 2 -a 4 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p4" -k "/workspace/output/rekaflash3/stage2p3/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-final2' -N 1
+
+
+
+
+
+
+# GQA
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.0001 -f 0.00001 -m 2048 -b 8 -a 1 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/new_stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-GQA-Test' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/new_stage1/epoch_0_step_400 /workspace/output/Qwen2.5-14B-Instruct/new_stage1/pytorch_model.bin
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.00003 -f 0.00003 -m 2048 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/new_stage2" -k "/workspace/output/Qwen2.5-14B-Instruct/new_stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-GQA' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/new_stage2/epoch_0_step_400 /workspace/output/Qwen2.5-14B-Instruct/new_stage2/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.000005 -f 0.000005 -m 4096 -b 1 -a 1 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/new_stage2" -k "/workspace/output/Qwen2.5-14B-Instruct/new_stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-GQA' -N 1
+
+# GQA 074
+
+
+
+
+
+
+#Reka 3 with cxa073 Stage1
+sh train_stage1.sh -c configs/reka_flash3.yaml -l 0.0001 -f 0.00001 -m 2048 -b 7 -a 2 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Reka-Flash3-cxa073-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage1/epoch_0_step_3200 /workspace/output/rekaflash3/stage1/pytorch_model.bin
+
+
+
+#stage2
+sh train.sh -c configs/reka_flash3.yaml -l 0.000005 -f 0.000005 -m 2048 -b 7 -a 2 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2" -k "/workspace/output/rekaflash3/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage2/epoch_0_step_1400 /workspace/output/rekaflash3/stage2/pytorch_model.bin
+
+sh train.sh -c configs/reka_flash3.yaml -l 0.000005 -f 0.000005 -m 4096 -b 4 -a 4 -r "/workspace/r2" -o "/workspace/output/rekaflash3/stage2p" -k "/workspace/output/rekaflash3/stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Reka-Flash-3-21B-Stage2-final' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/rekaflash3/stage2p/epoch_0_step_1200 /workspace/output/rekaflash3/stage2p/pytorch_model.bin
+
+
+
+
+#qwen
+sh train.sh -c configs/qwen_14b.yaml -l 0.00003 -f 0.00001 -m 2048 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/new_stage2p" -k "/workspace/output/Qwen2.5-14B-Instruct/new_stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2p-GQA-cxa075' -N 1
+
+#cxa075
+
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.00015 -f 0.00001 -m 1024 -b 11 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage1_cxa075" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-GQA-cxa075' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage1_cxa075/epoch_0_step_3800 /workspace/output/Qwen2.5-14B-Instruct/stage1_cxa075/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.00003 -f 0.00001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075" -k "/workspace/output/Qwen2.5-14B-Instruct/stage1_cxa075/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-GQA-cxa075' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075/epoch_0_step_6200 /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.000005 -f 0.000001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075_final_2048" -k "/workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-GQA-cxa075-final-2048' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075_final_2048/epoch_0_step_3800 /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa075_final_2048/pytorch_model.bin
+
+
+#cxa076
+
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.00015 -f 0.00001 -m 1024 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage1_cxa076" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-GQA-cxa076' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage1_cxa076/epoch_0_step_800 /workspace/output/Qwen2.5-14B-Instruct/stage1_cxa076/pytorch_model.bin
+
+sh train_stage1.sh -c configs/qwen_14b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage1p_cxa076" -k "/workspace/output/Qwen2.5-14B-Instruct/stage1_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen-14B-GQA-cxa076' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage1p_cxa076/epoch_0_step_5600 /workspace/output/Qwen2.5-14B-Instruct/stage1p_cxa076/pytorch_model.bin
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.00003 -f 0.00001 -m 4096 -b 4 -a 4 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2_cxa076" -k "/workspace/output/Qwen2.5-14B-Instruct/stage1p_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-GQA-cxa076' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa076/epoch_0_step_3000 /workspace/output/Qwen2.5-14B-Instruct/stage2_cxa076/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.000005 -f 0.000001 -m 3072 -b 7 -a 3 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2final_cxa076" -k "/workspace/output/Qwen2.5-14B-Instruct/stage2_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2final-GQA-cxa076' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage2final_cxa076/epoch_0_step_2400 /workspace/output/Qwen2.5-14B-Instruct/stage2final_cxa076/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen_14b.yaml -l 0.000003 -f 0.000001 -m 2048 -b 8 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen2.5-14B-Instruct/stage2_2048_cxa076" -k "/workspace/output/Qwen2.5-14B-Instruct/stage2final_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2-2048-GQA-cxa076' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen2.5-14B-Instruct/stage2_2048_cxa076/epoch_0_step_2600 /workspace/output/Qwen2.5-14B-Instruct/stage2_2048_cxa076/pytorch_model.bin
+
+
+
+#Qwen 3
+sh train_stage1.sh -c configs/qwen3_14b.yaml -l 0.00015 -f 0.00001 -m 1536 -b 10 -a 2 -r "/workspace/r2" -o "/workspace/output/Qwen3-14B/stage1p_cxa076" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'PRWKV-Qwen3-14B-GQA-cxa076' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen3-14B/stage1p_cxa076/epoch_0_step_4800 /workspace/output/Qwen3-14B/stage1p_cxa076/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen3_14b.yaml -l 0.00003 -f 0.00001 -m 3072 -b 7 -a 3 -r "/workspace/r2" -o "/workspace/output/Qwen3-14B/stage2_cxa076" -k "/workspace/output/Qwen3-14B/stage1p_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen-14B-Stage2final-GQA-cxa076' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen3-14B/stage2_cxa076/epoch_0_step_2200 /workspace/output/Qwen3-14B/stage2_cxa076/pytorch_model.bin
+
+sh train.sh -c configs/qwen3_14b.yaml -l 0.000005 -f 0.000001 -m 3072 -b 7 -a 3 -r "/workspace/r2" -o "/workspace/output/Qwen3-14B/stage2final_cxa076" -k "/workspace/output/Qwen3-14B/stage2_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen3-14B-Stage2final-GQA-cxa076' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen3-14B/stage2final_cxa076/epoch_0_step_3600 /workspace/output/Qwen3-14B/stage2final_cxa076/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen3_14b.yaml -l 0.000003 -f 0.000003 -m 3072 -b 7 -a 3 -r "/workspace/r2" -o "/workspace/output/Qwen3-14B/stage2final2_cxa076" -k "/workspace/output/Qwen3-14B/stage2final_cxa076/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-Qwen3-14B-Stage2final2-GQA-cxa076' -N 1
+
+python ./train_scripts/save_checkpoint.py /workspace/output/Qwen3-14B/stage2final2_cxa076/epoch_0_step_4800 /workspace/output/Qwen3-14B/stage2final2_cxa076/pytorch_model.bin
+
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'PRWKV-cxa077r-qwen3-4b-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/stage1/epoch_0_step_800 /home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin
+
+
+
+sh train.sh -c configs/qwen3_8b.yaml -l 0.00003 -f 0.00001 -m 4096 -b 1 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage2" -k "/home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'PRWKV-cxa077r-qwen3-4b-stage2' -N 1
+
+
+#Attention Freeze
+sh train_stage1.sh -c configs/qwen3_4b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 10 -a 2 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-4B/stage1-att-freeze" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'PRWKV-cxa077r-qwen3-4b-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-4B/stage1-att-freeze/epoch_0_step_3800 /home/client/Projects/output/Qwen3-4B/stage1-att-freeze/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen3_4b.yaml -l 0.00003 -f 0.00001 -m 4096 -b 2 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-4B/stage2att" -k "/home/client/Projects/output/Qwen3-4B/stage1-att-freeze/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'PRWKV-cxa077r-qwen3-4b-stage2' -N 1
+
+
+#New W7900 x 2
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 2 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa076r-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/stage1/epoch_0_step_3200 /home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1" -k "/home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+
+
+sh train.sh -c configs/qwen3_8b.yaml -l 0.00003 -f 0.00001 -m 2048 -b 2 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage2" -k "/home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'PRWKV-cxa077r-qwen3-8b-stage1' -N 1
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 1 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/stage1/epoch_0_step_3200 /home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin
+
+
+#8B-Stage1
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/stage1/epoch_0_step_8400 /home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/stage1p" -k "/home/client/Projects/output/Qwen3-8B/stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/stage1p/epoch_0_step_1000 /home/client/Projects/output/Qwen3-8B/stage1p/pytorch_model.bin
+
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa077r-stage1/epoch_0_step_1000 /home/client/Projects/output/Qwen3-8B/cxa077r-stage1/pytorch_model.bin
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p" -k "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa077r-stage1p/epoch_0_step_1600 /home/client/Projects/output/Qwen3-8B/cxa077r-stage1p/pytorch_model.bin
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2" -k "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa077r-qwen3-8b-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2/epoch_0_step_9600 /home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2/pytorch_model.bin
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1" -k "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1' -N 1
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0002 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1' -N 1
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.00001 -m 1024 -b 6 -a 5 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1" -k "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1' -N 1
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.00001 -m 1024 -b 1 -a 1 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1" -k "/home/client/Projects/output/Qwen3-8B/cxa077r-stage1p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/epoch_0_step_400 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.00001 -m 2048 -b 1 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2/epoch_0_step_20400 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2/pytorch_model.bin
+
+sh train.sh -c configs/qwen3_8b.yaml -l 0.000003 -f 0.000003 -m 2048 -b 1 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2' -N 1
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/epoch_0_step_3200 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.00003 -f 0.00001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1final' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p/epoch_0_step_6800 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p/pytorch_model.bin
+
+
+sh train.sh -c configs/qwen3_8b.yaml -l 0.00003 -f 0.00001 -m 3072 -b 1 -a 32 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2' -N 1
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.00003 -f 0.00001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1final2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p2/epoch_0_step_4800 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1p2/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 5 -a 3 -r "/home/client/Projects/r2" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1-new' -N 1
+
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new/epoch_0_step_2000 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new/pytorch_model.bin
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1-new' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new2/epoch_0_step_8800 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new2/pytorch_model.bin
+
+
+
+
+FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE"
+
+
+sh train2.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.000001 -m 2048 -b 1 -a 1 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-new2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1
+
+
+
+
+
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage1-ds2" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage1-ds2' -N 1
+
+
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2/epoch_0_step_3200 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.000001 -m 4096 -b 1 -a 10 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p/epoch_0_step_3000 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000003 -f 0.000001 -m 4096 -b 1 -a 10 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000008 -f 0.000001 -m 3584 -b 1 -a 10 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p2" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p2/epoch_0_step_3000 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p2/pytorch_model.bin
+
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000005 -f 0.000001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p3" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p3/epoch_0_step_3000 /home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p3/pytorch_model.bin
+
+
+
+nohup sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000005 -f 0.000001 -m 3072 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p3" -k "/home/client/Projects/output/Qwen3-8B/cxa078r-hybrid-stage2p3/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-hybrid-qwen3-8b-stage2-new' -N 1 &
+
+
+
+#SHIKIRINAOSHI
+
+sh train_stage1.sh -c configs/qwen3_4b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 11 -a 2 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-4B/cxa078r-stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-4B/cxa078r-stage1/epoch_0_step_1200 /home/client/Projects/output/Qwen3-4B/cxa078r-stage1/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_4b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 11 -a 2 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-4B/cxa078r-stage1p" -k "/home/client/Projects/output/Qwen3-4B/cxa078r-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa078r-stage1' -N 1
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-4B/cxa078r-stage1p/epoch_0_step_6400 /home/client/Projects/output/Qwen3-4B/cxa078r-stage1p/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_4b.yaml -l 0.00003 -f 0.000001 -m 4096 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-4B/cxa078r-stage2" -k "/home/client/Projects/output/Qwen3-4B/cxa078r-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-stage2' -N 1
+
+
+#for Test 8bit
+sh train_stage1.sh -c configs/qwen3_0b6.yaml -l 0.0001 -f 0.00001 -m 1024 -b 1 -a 4 -r "/home/client/Projects/RWKV-LM-RLHF/main/myfolder/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-0.6B/cxa078r-stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'cxa078r-stage1-0b6' -N 1
+
+
+
+sh train_stage1.sh -c configs/qwen3_1b7.yaml -l 0.0001 -f 0.00001 -m 1024 -b 6 -a 4 -r "/home/client/Projects/RWKV-LM-RLHF/main/myfolder/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-1.8B/cxa078r-stage1" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 1 -z 1 -P 'cxa078r-stage1-0b6' -N 1
+ 
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-1.8B/cxa078r-stage1/epoch_0_step_1200 /home/client/Projects/output/Qwen3-1.8B/cxa078r-stage1/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_1b7.yaml -l 0.0001 -f 0.00001 -m 1024 -b 3 -a 4 -r "/home/client/Projects/RWKV-LM-RLHF/main/myfolder/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-1.8B/cxa078r-stage2" -k "/home/client/Projects/output/Qwen3-1.8B/cxa078r-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'cxa078r-stage1-0b6' -N 1
+ 
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-1.8B/cxa078r-stage2/epoch_0_step_29000 /home/client/Projects/output/Qwen3-1.8B/cxa078r-stage2/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_1b7.yaml -l 0.0001 -f 0.00001 -m 2560 -b 2 -a 4 -r "/home/client/Projects/RWKV-LM-RLHF/main/myfolder/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-1.8B/cxa078r-stage2p" -k "/home/client/Projects/output/Qwen3-1.8B/cxa078r-stage1/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 1 -z 1 -P 'cxa078r-stage1-0b6' -N 1
+ 
+
+#
+#
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-4B/cxa078r-stage2/epoch_0_step_16000 /home/client/Projects/output/Qwen3-4B/cxa078r-stage2/pytorch_model.bin
+
+
+
+
+sh train2_ds2.sh -c configs/qwen3_4b.yaml -l 0.00003 -f 0.000001 -m 4096 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-4B/cxa078r-stage2p" -k "/home/client/Projects/output/Qwen3-4B/cxa078r-stage2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'cxa078r-stage2p' -N 1
+
+
+
+############################
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 8 -a 2 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage1p" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa079-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-4B/hxa079-stage1p/epoch_0_step_6400 /home/client/Projects/output/Qwen3-8B/hxa079-stage1p/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.00006 -f 0.000001 -m 2048 -b 3 -a 4 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p" -k "/home/client/Projects/output/Qwen3-8B/hxa079-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-stage2p' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa079-stage1p/epoch_0_step_2000 /home/client/Projects/output/Qwen3-8B/cxa079-stage1p/pytorch_model.bin
+
+
+sh train_stage1.sh -c configs/qwen3_8b.yaml -l 0.0001 -f 0.00001 -m 1024 -b 8 -a 2 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage1p" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 1 -G 2 -z 1 -P 'cxa079-qwen3-8b-stage1' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa079-stage1p/epoch_0_step_4400 /home/client/Projects/output/Qwen3-8B/cxa079-stage1p/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.00001 -f 0.000001 -m 2048 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage1p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-stage2p' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa079-stage2p/epoch_0_step_21000 /home/client/Projects/output/Qwen3-8B/cxa079-stage2p/pytorch_model.bin
+
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000003 -f 0.000001 -m 2048 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-stage2p2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/epoch_0_step_2000 /home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000003 -f 0.000001 -m 2048 -b 2 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-stage2p2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/epoch_0_step_7000 /home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin
+
+
+
+sh train2_ds2.sh -c configs/qwen3_8b.yaml -l 0.000002 -f 0.000001 -m 4096 -b 1 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p3" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-stage2p3' -N 1
+
+
+
+Experiment HXA079
+sh train2_ds2.sh -c configs/qwen3_8b_hybrid_l6.yaml -l 0.000003 -f 0.000001 -m 4096 -b 1 -a 8 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/hxa079-stage2" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-hybrid-stage2' -N 1
+
+
+python ./train_scripts/save_checkpoint.py /home/client/Projects/output/Qwen3-8B/hxa079-stage2/epoch_0_step_6000 /home/client/Projects/output/Qwen3-8B/hxa079-stage2/pytorch_model.bin
+
+
+
+Experiment HXA079 
+sh train2_ds2.sh -c configs/qwen3_8b_hybrid_l6.yaml -l 0.00001 -f 0.000001 -m 2048 -b 2 -a 6 -r "/home/client/Projects/OpenMOSE_Gen3/Final" -o "/home/client/Projects/output/Qwen3-8B/hxa079-stage2-pls" -k "/home/client/Projects/output/Qwen3-8B/cxa079-stage2p2/pytorch_model.bin/pytorch_model.bin" -g 1 -F 0 -d 1 -t 1000_000_000 -T 0.0002 -R v7 -s 2 -G 2 -z 1 -P 'hxa079-hybrid-stage2' -N 1

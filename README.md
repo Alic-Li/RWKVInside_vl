@@ -1,2 +1,2 @@
-# RWKVInside_vl
-RWKVInside for vision LLM
+# RWKVInside
+## This repository is for my personal experimentation with linearizing Transformer models.
